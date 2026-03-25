@@ -1,0 +1,89 @@
+CREATE TABLE customers (
+    customer_id INT PRIMARY KEY,
+    full_name VARCHAR(255) NOT NULL,
+    phone VARCHAR(15),
+    address VARCHAR(255)
+);
+
+CREATE TABLE products (
+    product_id INT PRIMARY KEY,
+    product_name VARCHAR(255) NOT NULL,
+    price DECIMAL(10,2) CHECK (price > 0)
+);
+
+CREATE TABLE invoices (
+    invoice_id INT PRIMARY KEY,
+    created_date DATE,
+    customer_id INT,
+    FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
+);
+
+CREATE TABLE order_detail (
+    invoice_id INT,
+    product_id INT,
+    quantity INT CHECK (quantity > 0),
+    PRIMARY KEY (invoice_id, product_id),
+    FOREIGN KEY (invoice_id) REFERENCES invoices(invoice_id),
+    FOREIGN KEY (product_id) REFERENCES products(product_id)
+);
+
+
+INSERT INTO customers VALUES
+(1, 'Nguyen Van A', '0123456789', 'Ha Noi'),
+(2, 'Tran Van B', '0987654321', 'HCM');
+
+INSERT INTO products VALUES
+(1, 'Sua tuoi', 15000),
+(2, 'Banh mi', 10000);
+
+INSERT INTO invoices VALUES
+(1, '2024-03-01', 1);
+
+INSERT INTO order_detail VALUES
+(1, 1, 2),
+(1, 2, 3);
+
+
+
+
+CREATE TABLE suppliers (
+    supplier_id SERIAL PRIMARY KEY,
+    supplier_name VARCHAR(255) NOT NULL,
+    contact_phone VARCHAR(15) UNIQUE
+);
+
+
+
+ALTER TABLE suppliers
+ADD COLUMN email VARCHAR(100);
+
+ALTER TABLE products
+ADD COLUMN supplier_id INT;
+
+ALTER TABLE products
+ADD CONSTRAINT fk_supplier
+FOREIGN KEY (supplier_id)
+REFERENCES suppliers(supplier_id);
+
+
+INSERT INTO suppliers (supplier_name, contact_phone, email) VALUES
+('Cong ty Sua Viet Nam', '0987654321', 'contact@vinamilk.vn'),
+('Cong ty Thuc pham A Chau', '0912345678', 'contact@acecook.vn');
+
+
+UPDATE suppliers
+SET contact_phone = '0911112222'
+WHERE supplier_name = 'Cong ty Thuc pham A Chau';
+
+DELETE FROM products
+WHERE product_id = 8;
+
+
+CREATE TABLE test_table (
+    id INT
+);
+
+ALTER TABLE suppliers
+DROP COLUMN contact_phone;
+
+DROP TABLE test_table;
