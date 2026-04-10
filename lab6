@@ -1,0 +1,47 @@
+SELECT 
+    COUNT(*) AS SoLuongSanPham,
+    AVG(don_gia) AS GiaTrungBinh,
+    MIN(don_gia) AS GiaThapNhat,
+    MAX(don_gia) AS GiaCaoNhat
+FROM product_2;
+
+
+
+
+
+SELECT 
+    s.supplier_name,
+    COUNT(p.product_id) AS TongSoSanPham
+FROM supplier_2 s
+JOIN product_2 p 
+    ON s.supplier_id = p.supplier_id
+GROUP BY s.supplier_name
+HAVING COUNT(p.product_id) > 1
+ORDER BY TongSoSanPham DESC;
+
+
+
+
+SELECT 
+    invoice_id,
+    TO_CHAR(ngay_tao, 'DD/MM/YYYY') AS ngay_dat
+FROM invoice_2
+WHERE 
+    EXTRACT(YEAR FROM ngay_tao) = 2025
+    AND EXTRACT(MONTH FROM ngay_tao) = 10;
+
+
+
+
+
+SELECT 
+    c.ten_khach_hang,
+    SUM(od.so_luong * od.don_gia) AS TongChiTieu
+FROM customer_2 c
+JOIN invoice_2 i 
+    ON c.customer_id = i.customer_id
+JOIN order_detail_2 od 
+    ON i.invoice_id = od.invoice_id
+GROUP BY c.customer_id, c.ten_khach_hang
+HAVING SUM(od.so_luong * od.don_gia) > 100000
+ORDER BY TongChiTieu DESC;	
